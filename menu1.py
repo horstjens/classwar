@@ -163,66 +163,66 @@ class PygView(object):
                             print("bye") 
                             self.__init__()
                         elif result == "Buy blue attacker":
-                            self.cash.play
                             if Settings.gold >= Settings.price_blue:
                                 Settings.gold -= Settings.price_blue
                                 Settings.blue_attackers += 1
+                                self.cash.play
                             else:
                                 print("Earn some money first!")
                                                   
                         elif result == "Buy blue defender":
-                            self.cash.play
                             if Settings.gold >= Settings.price_blue:
                                 Settings.gold -= Settings.price_blue
                                 Settings.blue_defenders += 1
+                                self.cash.play
                             else:
                                 print("Earn some money first!")
                                 
                         elif result == "Buy red attacker":
-                            self.cash.play
                             if Settings.gold >= Settings.price_red:
                                 Settings.gold -= Settings.price_red
                                 Settings.red_attackers += 1
+                                self.cash.play
                             else:
                                 print("Earn some money first!")
                                 
                         elif result == "Buy red defender":
-                            self.cash.play
                             if Settings.gold >= Settings.price_red:
                                 Settings.gold -= Settings.price_red
                                 Settings.red_defenders += 1
+                                self.cash.play
                             else:
                                 print("Earn some money first!")
                                 
                         elif result == "Sell blue attacker":
-                            self.cash.play
                             if Settings.blue_attackers > 0:
                                 Settings.gold += Settings.price_blue //2
                                 Settings.blue_attackers -= 1
+                                self.cash.play
                             else:
                                 print("You have no blue attacker!")
                                                   
                         elif result == "Sell blue defender":
-                            self.cash.play
                             if Settings.blue_defenders > 0:
                                 Settings.gold += Settings.price_blue //2
                                 Settings.blue_defenders -= 1
+                                self.cash.play
                             else:
                                 print("You have no blue defenders!")
                                 
                         elif result == "Sell red attacker":
-                            self.cash.play
                             if Settings.red_attackers > 0:
                                 Settings.gold += Settings.price_red //2
                                 Settings.red_attackers -= 1
+                                self.cash.play
                             else:
                                 print("You have no red attacker!")
                                 
                         elif result == "Sell red defender":
-                            self.cash.play
                             if Settings.red_defenders > 0:
                                 Settings.gold += Settings.price_red //2
                                 Settings.red_defenders -= 1
+                                self.cash.play
                             else:
                                 print("You have no red defenders!")
                                 
