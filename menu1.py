@@ -22,7 +22,7 @@ class Settings(object):
     price_blue = 10
     menu = {"root":["Play","buy red army", "buy blue army", "Difficulty", "Help", "Credits", "Options","Quit"],
             "buy blue army": ["buy blue defender", "buy blue attacker", "sell blue defender", "sell blue attacker"],
-            "buy red army":  ["buy red defender", "buy red attacker", "sell red defender", "sell red attacker"],
+            "buy red army": ["buy red defender", "buy red attacker", "sell red defender", "sell red attacker"],
             "Options":["Turn music off","Turn sound off","Change screen resolution", "Turn off Wilhelm"],
             "Difficulty":["easy","medium","elite","hardcore"],
             "Change screen resolution":["640x400","800x640","1024x800"],
@@ -91,6 +91,7 @@ class Menu(object):
 class PygView(object):
     width = 640
     height = 400
+  
     def __init__(self, width=640, height=400, fps=30):
         """Initialize pygame, window, background, font,...
            default arguments 
@@ -100,7 +101,7 @@ class PygView(object):
 
         pygame.init()
         
-        self.cash = pygame.mixer.Sound(os.path.join("data","cash.wav"))
+        self.cash = pygame.mixer.Sound(os.path.join('data', 'cash.wav'))
         #jump = pygame.mixer.Sound(os.path.join('data','jump.wav'))  #load sound
         #self.sound1 = pygame.mixer.Sound(os.path.join('data','Pickup_Coin.wav'))
         #self.sound2 = pygame.mixer.Sound(os.path.join('data','Jump.wav'))
@@ -128,11 +129,10 @@ class PygView(object):
                 self.draw_text(i, 100, m.items.index(i)*30+10,(0,0,255))
             else:
                 self.draw_text(i, 100, m.items.index(i)*30+10)
-        
         y = self.height - 120
-        self.draw_text("Gold: {}".format(Settings.gold), 10,y , (200,200,0))
-        self.draw_text("Red: A:{} D:{}".format(Settings.red_attackers, Settings.red_defenders), 150, y, (200,0,0))
-        self.draw_text("Blue: A:{} D:{}".format(Settings.blue_attackers, Settings.blue_defenders), 340, y, (0,0,200))
+        self.draw_text("Gold: {}".format(Settings.gold), 10, y, (200,200,0))
+        self.draw_text("Red: A:{} D:{}".format(Settings.red_attackers, Settings.red_defenders), 160, y, (200,0,0))
+        self.draw_text("Blue: A:{} D:{}".format(Settings.blue_attackers, Settings.blue_defenders), 350, y, (0,0,200))
 
     def run(self):
         """The mainloop
@@ -161,7 +161,7 @@ class PygView(object):
                         print(result)
                         if result is None:
                             break 
-                        elif "x" in result:
+                        if "x" in result:
                             # change screen resolution, menu text is something like "800x600"
                             left = result.split("x")[0]
                             right = result.split("x")[1]
@@ -181,70 +181,72 @@ class PygView(object):
                             #sys.exit()    
                             print("bye") 
                             self.__init__()
-                                                  
+                            
+                        #----- buy -----                          
                         elif result == "buy blue defender":
                             self.cash.play()
                             if Settings.gold >= Settings.price_blue:
                                 Settings.gold -= Settings.price_blue
                                 Settings.blue_defenders += 1
                             else:
-                                print("earn some money first")
+                                print("Earn some money first.")
+                                
                         elif result == "buy red defender":
                             self.cash.play()
                             if Settings.gold >= Settings.price_red:
                                 Settings.gold -= Settings.price_red
                                 Settings.red_defenders += 1
                             else:
-                                print("earn some money first")
+                                print("Earn some money first.")
+                                
                         elif result == "buy blue attacker":
                             self.cash.play()
                             if Settings.gold >= Settings.price_blue:
                                 Settings.gold -= Settings.price_blue
                                 Settings.blue_attackers += 1
                             else:
-                                print("earn some money first")
+                                print("Earn some money first.")
+                                
                         elif result == "buy red attacker":
                             self.cash.play()
                             if Settings.gold >= Settings.price_red:
                                 Settings.gold -= Settings.price_red
                                 Settings.red_attackers += 1
                             else:
-                                print("earn some money first")
-                                           
-                        #------ sell ------
+                                print("Earn some money first.")
+                        
+                        #----- sell -----        
                         elif result == "sell blue defender":
                             self.cash.play()
                             if Settings.blue_defenders > 0:
                                 Settings.gold += Settings.price_blue / 2
                                 Settings.blue_defenders -= 1
                             else:
-                                print("you have no blue defenders")
+                                print("Earn some money first.")
+                                
                         elif result == "sell red defender":
                             self.cash.play()
                             if Settings.red_defenders > 0:
                                 Settings.gold += Settings.price_red / 2
                                 Settings.red_defenders -= 1
                             else:
-                                print("you have no red defenders")
+                                print("Earn some money first.")
+                                
                         elif result == "sell blue attacker":
                             self.cash.play()
                             if Settings.blue_attackers > 0:
                                 Settings.gold += Settings.price_blue / 2
                                 Settings.blue_attackers -= 1
                             else:
-                                print("you have no blue attackers")
+                                print("Earn some money first.")
+                        
                         elif result == "sell red attacker":
                             self.cash.play()
                             if Settings.red_attackers > 0:
                                 Settings.gold += Settings.price_red / 2
                                 Settings.red_attackers -= 1
                             else:
-                                print("you have no red attackers")
-                                           
-                    
-                    
-                    
-                    
+                                print("Earn some money first.")
                                 
                         elif result == "how to play":
                             text="play this game\n as you like\n and win!"
