@@ -20,14 +20,14 @@ class Settings(object):
     blue_attackers = 0
     price_red = 10
     price_blue = 10
-    menu = {"root":["Play!","Buy red army", "Buy blue army", "Difficulty", "Help", "Credits", "Options","Quit"],
-            "Buy blue army":["Buy blue attacker", "Buy blue defender", "Sell blue attacker", "Sell blue defender"],
-            "Buy red army":["Buy red attacker", "Buy red defender", "Sell red attacker", "Sell red defender"],
+    menu = {"root":["Play","buy red army", "buy blue army", "Difficulty", "Help", "Credits", "Options","Quit"],
+            "buy blue army": ["buy blue defender", "buy blue attacker", "sell blue defender", "sell blue attacker"],
+            "buy red army": ["buy red defender", "buy red attacker", "sell red defender", "sell red attacker"],
             "Options":["Turn music off","Turn sound off","Change screen resolution", "Turn off Wilhelm"],
             "Difficulty":["easy","medium","elite","hardcore"],
             "Change screen resolution":["640x400","800x640","1024x800"],
             "Credits":["bla1","bla2", "False"],
-            "Help":["How to play", "How to win"]
+            "Help":["how to play", "how to win"]
             } 
         
 
@@ -68,11 +68,14 @@ class Menu(object):
             self.oldnumbers.append(self.active_itemnumber)
             self.menuname = text
             self.items = self.menudict[text]
+            # necessary to add "back to previous menu"?
             if self.menuname != "root":
                 self.items.append("back")
             self.active_itemnumber = 0
             return None
         elif text == "back":
+            #self.menuname = self.menuname_old[-1]
+            #remove last item from old
             self.menuname =  self.oldnames.pop(-1)
             self.active_itemnumber= self.oldnumbers.pop(-1)
             print("back ergibt:", self.menuname)
@@ -98,7 +101,11 @@ class PygView(object):
 
         pygame.init()
         
-        self.cash = pygame.mixer.Sound(os.path.join("data", "cash.wav"))
+        self.cash = pygame.mixer.Sound(os.path.join('data', 'cash.wav'))
+        #jump = pygame.mixer.Sound(os.path.join('data','jump.wav'))  #load sound
+        #self.sound1 = pygame.mixer.Sound(os.path.join('data','Pickup_Coin.wav'))
+        #self.sound2 = pygame.mixer.Sound(os.path.join('data','Jump.wav'))
+        #self.sound3 = pygame.mixer.Sound(os.path.join('data','mix.wav'))
         pygame.display.set_caption("Press ESC to quit")
         PygView.width = width
         PygView.height = height
@@ -123,12 +130,14 @@ class PygView(object):
             else:
                 self.draw_text(i, 100, m.items.index(i)*30+10)
         y = self.height - 120
-        self.draw_text("Gold: {}".format(Settings.gold), 10, y, (255, 255, 0))
-        self.draw_text("Red: A:{} D:{}".format(Settings.red_attackers, Settings.red_defenders), 150, y, (255, 0, 0))
-        self.draw_text("Blue: A:{} D:{}".format(Settings.blue_attackers, Settings.blue_defenders), 340, y, (0, 0, 255))
+        self.draw_text("Gold: {}".format(Settings.gold), 10, y, (200,200,0))
+        self.draw_text("Red: A:{} D:{}".format(Settings.red_attackers, Settings.red_defenders), 160, y, (200,0,0))
+        self.draw_text("Blue: A:{} D:{}".format(Settings.blue_attackers, Settings.blue_defenders), 350, y, (0,0,200))
 
     def run(self):
-        """The mainloop"""
+        """The mainloop
+        """
+        #self.paint() 
         running = True
         while running:
             for event in pygame.event.get():
@@ -138,93 +147,114 @@ class PygView(object):
                     if event.key == pygame.K_ESCAPE:
                         running = False
                     if event.key==pygame.K_DOWN or event.key == pygame.K_KP2:
+                        #print(m.active_itemnumber)
                         m.nextitem()
                         print(m.active_itemnumber)
+                        #self.sound2.play()
                     if event.key==pygame.K_UP or event.key == pygame.K_KP8:
                         m.previousitem()
+                        #self.sound1.play()
                     if event.key==pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                        #self.sound3.play()
                         result = m.get_text()
+                        #print(m.get_text())
                         print(result)
                         if result is None:
                             break 
-                        elif "x" in result:
+                        if "x" in result:
+                            # change screen resolution, menu text is something like "800x600"
                             left = result.split("x")[0]
                             right = result.split("x")[1]
                             if str(int(left))==left and str(int(right))== right:
                                 PygView.width = int(left)
                                 PygView.height = int(right)
                                 self.set_resolution()
-                                                        
-                        elif result=="Play":
+                                
                         
+                        # important: no elif here, instead if, because every menupoint could contain an 'x'        
+                        elif result=="Play":
+                            # simpledefense.PygView().run()
                             print("activating external program")
+                            #externalProgram.PygView(self.width, self.height)
                             pygame.quit()
                             template004_sprites_collision_detection.PygView(900,900).run()
+                            #sys.exit()    
                             print("bye") 
                             self.__init__()
-                        elif result == "Buy blue attacker":
-                            self.cash.play
-                            if Settings.gold >= Settings.price_blue:
-                                Settings.gold -= Settings.price_blue
-                                Settings.blue_attackers += 1
-                            else:
-                                print("Earn some money first!")
-                                                  
-                        elif result == "Buy blue defender":
-                            self.cash.play
+                            
+                        #----- buy -----                          
+                        elif result == "buy blue defender":
+                            
                             if Settings.gold >= Settings.price_blue:
                                 Settings.gold -= Settings.price_blue
                                 Settings.blue_defenders += 1
+                                self.cash.play()
                             else:
-                                print("Earn some money first!")
+                                print("Earn some money first.")
                                 
-                        elif result == "Buy red attacker":
-                            self.cash.play
-                            if Settings.gold >= Settings.price_red:
-                                Settings.gold -= Settings.price_red
-                                Settings.red_attackers += 1
-                            else:
-                                print("Earn some money first!")
-                                
-                        elif result == "Buy red defender":
-                            self.cash.play
+                        elif result == "buy red defender":
+                            
                             if Settings.gold >= Settings.price_red:
                                 Settings.gold -= Settings.price_red
                                 Settings.red_defenders += 1
+                                self.cash.play()
                             else:
-                                print("Earn some money first!")
+                                print("Earn some money first.")
                                 
-                        elif result == "Sell blue attacker":
-                            self.cash.play
-                            if Settings.blue_attackers > 0:
-                                Settings.gold += Settings.price_blue //2
-                                Settings.blue_attackers -= 1
+                        elif result == "buy blue attacker":
+                            
+                            if Settings.gold >= Settings.price_blue:
+                                Settings.gold -= Settings.price_blue
+                                Settings.blue_attackers += 1
+                                self.cash.play()
                             else:
-                                print("You have no blue attacker!")
-                                                  
-                        elif result == "Sell blue defender":
-                            self.cash.play
+                                print("Earn some money first.")
+                                
+                        elif result == "buy red attacker":
+                            
+                            if Settings.gold >= Settings.price_red:
+                                Settings.gold -= Settings.price_red
+                                Settings.red_attackers += 1
+                                self.cash.play()
+                            else:
+                                print("Earn some money first.")
+                        
+                        #----- sell -----        
+                        elif result == "sell blue defender":
+                            
                             if Settings.blue_defenders > 0:
-                                Settings.gold += Settings.price_blue //2
+                                Settings.gold += Settings.price_blue / 2
                                 Settings.blue_defenders -= 1
+                                self.cash.play()
                             else:
-                                print("You have no blue defenders!")
+                                print("Earn some money first.")
                                 
-                        elif result == "Sell red attacker":
-                            self.cash.play
-                            if Settings.red_attackers > 0:
-                                Settings.gold += Settings.price_red //2
-                                Settings.red_attackers -= 1
-                            else:
-                                print("You have no red attacker!")
-                                
-                        elif result == "Sell red defender":
-                            self.cash.play
+                        elif result == "sell red defender":
+                            
                             if Settings.red_defenders > 0:
-                                Settings.gold += Settings.price_red //2
+                                Settings.gold += Settings.price_red / 2
                                 Settings.red_defenders -= 1
+                                self.cash.play()
                             else:
-                                print("You have no red defenders!")
+                                print("Earn some money first.")
+                                
+                        elif result == "sell blue attacker":
+                            
+                            if Settings.blue_attackers > 0:
+                                Settings.gold += Settings.price_blue / 2
+                                Settings.blue_attackers -= 1
+                                self.cash.play()
+                            else:
+                                print("Earn some money first.")
+                        
+                        elif result == "sell red attacker":
+                            
+                            if Settings.red_attackers > 0:
+                                Settings.gold += Settings.price_red / 2
+                                Settings.red_attackers -= 1
+                                self.cash.play()
+                            else:
+                                print("Earn some money first.")
                                 
                         elif result == "how to play":
                             text="play this game\n as you like\n and win!"
@@ -256,6 +286,7 @@ class PygView(object):
             
         pygame.quit()
 
+
     def draw_text(self, text ,x=50 , y=0,color=(27,135,177)):
         if y==0:
             y= self.height - 50
@@ -266,6 +297,8 @@ class PygView(object):
         surface = self.font.render(text, True, color)
         self.screen.blit(surface, (x,y))
 
+    
+####
 
 if __name__ == '__main__':
 
